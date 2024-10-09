@@ -1,0 +1,5 @@
+{
+  "files.autoSave": "afterDelay",
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.formatOnSave": true
+}

@@ -1,0 +1,23 @@
+meta {
+  name: subscription
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8080/api/subscription
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "service": "spotify",
+    "serviceUrl": "https://spotify.com",
+    "title": "Sptotify",
+    "cost": 90.99,
+    "currency": "SEK",
+    "billingInterval": "monthly",
+    "active": true
+  }
+}
