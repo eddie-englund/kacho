@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { sum } from 'radash';
 import { BillingInterval } from '../../../../lib/index';
 import { consola } from 'consola';
+import { eq } from 'drizzle-orm';
 
 const fxSchema = z.array(
   z.object({
@@ -28,6 +29,7 @@ export const getTotalSumOfSubscriptions = (app: Hono) =>
         interval: subscriptionsTable.billingInterval,
       })
       .from(subscriptionsTable)
+      .where(eq(subscriptionsTable.active, true))
       .catch((err) => {
         consola.error(err);
 
@@ -111,7 +113,7 @@ export const getTotalSumOfSubscriptions = (app: Hono) =>
 
     const exchangedYearlySubscriptions = exchangeSubscriptions(yearly);
     const exchangedMonthlySubscriptions = exchangeSubscriptions(monthly);
-    consola.log(exchangedMonthlySubscriptions);
+
     const exchangedMonthlySplit = exchangeSubscriptions([
       ...monthly,
       ...yearly.map((e) => ({ ...e, cost: e.cost / 12 })), // split by 12 for a monthly breakdown

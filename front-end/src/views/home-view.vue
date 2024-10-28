@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { refDebounced, useFetch } from "@vueuse/core";
 import subscriptionCard from "@/components/subscription-card.vue";
-import { SubscriptionSchema } from "@/util/subscription-util";
 import { z } from "zod";
 import { computed, shallowRef } from "vue";
 import errorModal from "@/components/error-modal.vue";
@@ -10,12 +9,24 @@ import kButton from "@/components/k-button.vue";
 import { PlusCircle } from "lucide-vue-next";
 import addSubscriptionModal from "@/components/add-subscription-modal.vue";
 import statModal from "@/components/stat-modal.vue";
-import { homeSchema, completeHomeSchema } from "@/util/subscription-util";
+import {
+  type SubscriptionSchema,
+  completeHomeSchema,
+} from "@/util/subscription-util";
+import { useSubscriptionStore } from "@/stores/subscriptions-store";
 
+const subscriptionStore = useSubscriptionStore();
 const query = shallowRef<string>("");
 const searchQuery = refDebounced<string>(query, 150);
-const subscriptions = shallowRef<homeSchema[]>([]);
-const showNewSubscription = shallowRef<boolean>(false);
+const subscriptions = shallowRef<SubscriptionSchema[]>([]);
+const showSubscriptionForm = shallowRef<boolean>(false);
+const isNewSubscription = shallowRef<boolean>(true);
+
+const handleCloseForm = () => {
+  showSubscriptionForm.value = false;
+  isNewSubscription.value = true;
+  subscriptionStore.$reset();
+};
 
 const searchResults = computed(() => {
   const results = fuzzysort.go(searchQuery.value, subscriptions.value, {
@@ -55,16 +66,50 @@ const { data, execute: fetchTotal } = useFetch(
 const handleCompleted = async () => {
   await execute();
   await fetchTotal();
-  showNewSubscription.value = false;
+  showSubscriptionForm.value = false;
+};
+
+const handleEdit = (subscription: SubscriptionSchema) => {
+  subscriptionStore.title = subscription.title;
+  subscriptionStore.titleValid = true;
+  subscriptionStore.titleInit = true;
+
+  subscriptionStore.service = subscription.service;
+  subscriptionStore.serviceInit = true;
+  subscriptionStore.serviceValid = true;
+
+  subscriptionStore.serviceUrl = subscription.serviceUrl;
+  subscriptionStore.serviceUrlValid = true;
+  subscriptionStore.serviceUrlInit = true;
+
+  subscriptionStore.serviceImgUrl = subscription.serviceImg;
+  subscriptionStore.serviceImgUrlInit = true;
+  subscriptionStore.serviceImgUrlValid = true;
+
+  subscriptionStore.cost = subscription.cost;
+  subscriptionStore.costValid = true;
+  subscriptionStore.costInit = true;
+
+  subscriptionStore.currency = subscription.currency;
+  subscriptionStore.currencyValid = true;
+  subscriptionStore.currencyInit = true;
+
+  subscriptionStore.interval = subscription.billingInterval;
+  subscriptionStore.intervalInit = true;
+  subscriptionStore.intervalValid = true;
+
+  isNewSubscription.value = false;
+  showSubscriptionForm.value = true;
 };
 </script>
 
 <template>
   <main class="mt-10 relative">
     <add-subscription-modal
-      :open="showNewSubscription"
-      @close="showNewSubscription = false"
+      :open="showSubscriptionForm"
+      @close="handleCloseForm"
       @submit="handleCompleted"
+      :is-new="false"
     />
     <div>
       <div>
@@ -76,7 +121,7 @@ const handleCompleted = async () => {
             class="bg-slate-900 rounded p-4 text-white text-2xl placeholder:text-base w-full"
             placeholder="Filter...."
           />
-          <k-button :icon="PlusCircle" @click="showNewSubscription = true">
+          <k-button :icon="PlusCircle" @click="showSubscriptionForm = true">
             Add subscription
           </k-button>
         </div>
@@ -122,6 +167,7 @@ const handleCompleted = async () => {
           v-for="subscription in searchResults"
           :subscription
           :key="subscription.id"
+          @click="handleEdit(subscription)"
         />
       </transition-group>
     </div>

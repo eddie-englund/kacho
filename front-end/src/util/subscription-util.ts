@@ -50,7 +50,7 @@ export type homeSchema = z.infer<typeof homeSchema>;
 
 export const completeHomeSchema = z.object({
   success: z.boolean(),
-  data: z.array(homeSchema),
+  data: z.array(SubscriptionSchema),
 });
 
 export type completeHomeSchema = z.infer<typeof completeHomeSchema>;

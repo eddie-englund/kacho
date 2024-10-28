@@ -4,12 +4,10 @@ import { HTTPException } from 'hono/http-exception';
 import type { Hono } from 'hono';
 import { consola } from 'consola';
 
-const { id, serviceImg, cost, currency, title, active } = subscriptionsTable;
-
 export const getSubscriptions = (app: Hono) =>
   app.get('/api/subscriptions', async (c) => {
     const data = await db
-      .select({ id, serviceImg, cost, currency, title, active })
+      .select()
       .from(subscriptionsTable)
       .catch((err) => {
         consola.error(err);

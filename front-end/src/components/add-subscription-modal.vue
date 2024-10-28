@@ -7,112 +7,12 @@ import {
 } from "@headlessui/vue";
 import kButton from "./k-button.vue";
 import { CreateSubscriptionSchemas } from "@/util/subscription-util";
-import { computed, shallowRef, type ShallowRef } from "vue";
-import type { ZodSchema } from "zod";
-import { useFetch, watchDebounced } from "@vueuse/core";
+import { useFetch } from "@vueuse/core";
 import consola from "consola";
+import { useSubscriptionStore } from "@/stores/subscriptions-store";
 
-const {
-  titleSchema,
-  serviceSchema,
-  serviceImgSchema,
-  serviceUrlSchema,
-  costSchema,
-  currencySchema,
-  billingIntervalSchema,
-} = CreateSubscriptionSchemas;
-
+const subscriptionStore = useSubscriptionStore();
 const emit = defineEmits(["close", "submit"]);
-
-const validate =
-  (
-    value: ShallowRef<unknown>,
-    schema: ZodSchema,
-    validityRef: ShallowRef<boolean>,
-    initRef: ShallowRef<boolean>
-  ) =>
-  (): void => {
-    initRef.value = false;
-    const validation = schema.safeParse(value.value);
-    validityRef.value = validation.success;
-  };
-
-const title = shallowRef<string>("");
-const service = shallowRef<string>("");
-const serviceUrl = shallowRef<string>("");
-const serviceImgUrl = shallowRef<string>();
-const cost = shallowRef<number>(1);
-const currency = shallowRef<string>("SEK");
-const interval = shallowRef<string>("monthly");
-
-const titleInit = shallowRef<boolean>(true);
-const serviceInit = shallowRef<boolean>(true);
-const serviceUrlInit = shallowRef<boolean>(true);
-const serviceImgUrlInit = shallowRef<boolean>(true);
-const costInit = shallowRef<boolean>(true);
-const currencyInit = shallowRef<boolean>(true);
-const intervalInit = shallowRef<boolean>(true);
-
-const titleValid = shallowRef<boolean>(false);
-const serviceValid = shallowRef<boolean>(false);
-const serviceUrlValid = shallowRef<boolean>(false);
-const serviceImgUrlValid = shallowRef<boolean>(true);
-const costValid = shallowRef<boolean>(true);
-const currencyValid = shallowRef<boolean>(true);
-const intervalValid = shallowRef<boolean>(true);
-
-const validateTitle = validate(title, titleSchema, titleValid, titleInit);
-const validateService = validate(
-  service,
-  serviceSchema,
-  serviceValid,
-  serviceInit
-);
-const validateServiceUrl = validate(
-  serviceUrl,
-  serviceUrlSchema,
-  serviceUrlValid,
-  serviceUrlInit
-);
-const validateServiceImgUrl = validate(
-  serviceImgUrl,
-  serviceImgSchema,
-  serviceImgUrlValid,
-  serviceImgUrlInit
-);
-const validateCost = validate(cost, costSchema, costValid, costInit);
-const validateCurrency = validate(
-  currency,
-  currencySchema,
-  currencyValid,
-  currencyInit
-);
-const validateInterval = validate(
-  interval,
-  billingIntervalSchema,
-  intervalValid,
-  intervalInit
-);
-
-const formValid = computed(
-  () =>
-    titleValid.value &&
-    serviceValid.value &&
-    serviceUrlValid.value &&
-    serviceImgUrlValid &&
-    costValid.value &&
-    currencyValid.value
-);
-
-const debounce = 200;
-
-watchDebounced(title, () => validateTitle(), { debounce });
-watchDebounced(service, () => validateService(), { debounce });
-watchDebounced(serviceUrl, () => validateServiceUrl(), { debounce });
-watchDebounced(serviceImgUrl, () => validateServiceImgUrl(), { debounce });
-watchDebounced(cost, () => validateCost(), { debounce });
-watchDebounced(currency, () => validateCurrency(), { debounce });
-watchDebounced(interval, () => validateInterval(), { debounce });
 
 const { post, isFetching, error } = useFetch(
   `${import.meta.env.VITE_BASE_URL}/subscription`,
@@ -121,21 +21,22 @@ const { post, isFetching, error } = useFetch(
   }
 );
 
+// TODO: Handle edit case!
 async function handleSubmit() {
-  if (!formValid.value || isFetching.value) {
+  if (!subscriptionStore.formValid || isFetching.value) {
     consola.log(
-      `Form invalid: ${formValid.value} && isFetching: ${isFetching.value}`
+      `Form invalid: ${subscriptionStore.formValid} && isFetching: ${isFetching.value}`
     );
   }
 
   const finalForm = await CreateSubscriptionSchemas.completeSchema.parseAsync({
-    service: service.value,
-    serviceUrl: serviceUrl.value,
-    serviceImg: serviceImgUrl.value,
-    title: title.value,
-    cost: cost.value,
-    currency: currency.value,
-    billingInterval: interval.value,
+    service: subscriptionStore.service,
+    serviceUrl: subscriptionStore.serviceUrl,
+    serviceImg: subscriptionStore.serviceImgUrl,
+    title: subscriptionStore.title,
+    cost: subscriptionStore.cost,
+    currency: subscriptionStore.currency,
+    billingInterval: subscriptionStore.interval,
   });
 
   await post({ active: true, ...finalForm })
@@ -159,7 +60,7 @@ async function handleSubmit() {
           <div class="grid grid-cols-1">
             <label class="text-sm" for="title">Title</label>
             <input
-              v-model="title"
+              v-model="subscriptionStore.title"
               class="px-4 py-2 bg-slate-800 rounded placeholder:font-thin placeholder:text-slate-400"
               type="text"
               name="title"
@@ -168,7 +69,11 @@ async function handleSubmit() {
             />
             <p
               class="text-red-400 text-sm transition duration-150 ease-in-out"
-              :class="!titleValid && !titleInit ? 'block' : 'invisible'"
+              :class="
+                !subscriptionStore.titleValid && !subscriptionStore.titleInit
+                  ? 'block'
+                  : 'invisible'
+              "
             >
               Title is invalid
             </p>
@@ -176,7 +81,7 @@ async function handleSubmit() {
           <div class="grid grid-cols-1">
             <label class="text-sm" for="service">Service</label>
             <input
-              v-model="service"
+              v-model="subscriptionStore.service"
               class="px-4 py-2 bg-slate-800 rounded placeholder:font-thin placeholder:text-slate-400"
               type="text"
               name="service"
@@ -185,7 +90,12 @@ async function handleSubmit() {
             />
             <p
               class="text-red-400 text-sm transition duration-150 ease-in-out"
-              :class="!serviceValid && !serviceInit ? 'block' : 'invisible'"
+              :class="
+                !subscriptionStore.serviceValid &&
+                !subscriptionStore.serviceInit
+                  ? 'block'
+                  : 'invisible'
+              "
             >
               Service is invalid
             </p>
@@ -193,7 +103,7 @@ async function handleSubmit() {
           <div class="grid grid-cols-1">
             <label class="text-sm" for="service-url">Service URL</label>
             <input
-              v-model="serviceUrl"
+              v-model="subscriptionStore.serviceUrl"
               class="px-4 py-2 bg-slate-800 rounded placeholder:font-thin placeholder:text-slate-400"
               type="text"
               name="service-url"
@@ -203,7 +113,10 @@ async function handleSubmit() {
             <p
               class="text-red-400 text-sm transition duration-150 ease-in-out"
               :class="
-                !serviceUrlValid && !serviceUrlInit ? 'block' : 'invisible'
+                !subscriptionStore.serviceUrlValid &&
+                !subscriptionStore.serviceUrlInit
+                  ? 'block'
+                  : 'invisible'
               "
             >
               Service is not a valid URL
@@ -212,7 +125,7 @@ async function handleSubmit() {
           <div class="grid grid-cols-1">
             <label class="text-sm" for="cost">Cost</label>
             <input
-              v-model="cost"
+              v-model="subscriptionStore.cost"
               class="px-4 py-2 bg-slate-800 rounded placeholder:font-thin placeholder:text-slate-400"
               type="number"
               numerical
@@ -222,7 +135,11 @@ async function handleSubmit() {
             />
             <p
               class="text-red-400 text-sm transition duration-150 ease-in-out"
-              :class="!costValid && !costInit ? 'block' : 'invisible'"
+              :class="
+                !subscriptionStore.costValid && !subscriptionStore.costInit
+                  ? 'block'
+                  : 'invisible'
+              "
             >
               Invalid amount, must be a number above 0
             </p>
@@ -230,7 +147,7 @@ async function handleSubmit() {
           <div class="grid grid-cols-1">
             <label class="text-sm" for="currency">Currency</label>
             <input
-              v-model="currency"
+              v-model="subscriptionStore.currency"
               class="px-4 py-2 bg-slate-800 rounded placeholder:font-thin placeholder:text-slate-400"
               type="text"
               name="currency"
@@ -241,7 +158,12 @@ async function handleSubmit() {
             />
             <p
               class="text-red-400 text-sm transition duration-150 ease-in-out"
-              :class="!currencyValid && !currencyInit ? 'block' : 'invisible'"
+              :class="
+                !subscriptionStore.currencyValid &&
+                !subscriptionStore.currencyInit
+                  ? 'block'
+                  : 'invisible'
+              "
             >
               Invalid currency must be at least 3 digits.
             </p>
@@ -251,7 +173,7 @@ async function handleSubmit() {
               Billing Interval
             </label>
             <select
-              v-model="interval"
+              v-model="subscriptionStore.interval"
               name="billing-interval"
               required
               class="px-4 py-2 bg-slate-800 rounded placeholder:font-thin placeholder:text-slate-400"
@@ -263,7 +185,12 @@ async function handleSubmit() {
             </select>
             <p
               class="text-red-400 text-sm transition duration-150 ease-in-out"
-              :class="!intervalValid && !intervalInit ? 'block' : 'invisible'"
+              :class="
+                !subscriptionStore.intervalValid &&
+                !subscriptionStore.intervalInit
+                  ? 'block'
+                  : 'invisible'
+              "
             >
               Select an interval.
             </p>
@@ -271,7 +198,7 @@ async function handleSubmit() {
           <div class="grid grid-cols-1">
             <label class="text-sm" for="icon-url">Icon URL</label>
             <input
-              v-model="serviceImgUrl"
+              v-model="subscriptionStore.serviceImgUrl"
               class="px-4 py-2 bg-slate-800 rounded placeholder:font-thin placeholder:text-slate-400"
               type="text"
               name="icon-url"
@@ -281,7 +208,8 @@ async function handleSubmit() {
             <p
               class="text-red-400 text-sm transition duration-150 ease-in-out"
               :class="
-                !serviceImgUrlValid && !serviceImgUrlInit
+                !subscriptionStore.serviceImgUrlValid &&
+                !subscriptionStore.serviceImgUrlInit
                   ? 'block'
                   : 'invisible'
               "
@@ -298,7 +226,7 @@ async function handleSubmit() {
             </k-button>
             <k-button
               @click="handleSubmit"
-              :disabled="!formValid || isFetching"
+              :disabled="!subscriptionStore.formValid || isFetching"
             >
               Submit
             </k-button>
