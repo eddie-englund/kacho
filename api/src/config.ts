@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 const schema = z.object({
   databaseUrl: z.string().url(),
+  baseCurrency: z.string().min(1).max(10).toUpperCase().default('SEK'),
 });
 
 export const config = createConfigLoader()

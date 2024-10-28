@@ -1,0 +1,22 @@
+[
+  {
+    "service": "spotify",
+    "serviceUrl": "https://spotify.com",
+    "serviceImg": "https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green.png",
+    "title": "Spotify family",
+    "cost": 9.99,
+    "currency": "SEK",
+    "billingInterval": "monthly",
+    "active": true
+  },
+  {
+    "service": "discord",
+    "serviceUrl": "https://discord.gg",
+    "serviceImg": "https://cdn.prod.website-files.com/6257adef93867e50d84d30e2/636e0b544a3e3c7c05753bcd_full_logo_white_RGB.png",
+    "title": "Discord Nitro Classic",
+    "cost": 9.99,
+    "currency": "EUR",
+    "billingInterval": "monthly",
+    "active": true
+  }
+]

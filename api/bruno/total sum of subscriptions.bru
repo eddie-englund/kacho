@@ -1,0 +1,11 @@
+meta {
+  name: total sum of subscriptions
+  type: http
+  seq: 4
+}
+
+get {
+  url: http://localhost:8080/api/subscriptions/total-cost
+  body: json
+  auth: none
+}

@@ -5,6 +5,8 @@ import { app } from '../../app';
 import { zValidator } from '@hono/zod-validator';
 import { HTTPException } from 'hono/http-exception';
 import type { Hono } from 'hono';
+import { consola } from 'consola'
+
 
 const schema = createInsertSchema(subscriptionsTable).omit({ id: true });
 
@@ -16,8 +18,7 @@ export const postSubscription = (app: Hono) =>
       .insert(subscriptionsTable)
       .values(body)
       .catch((err) => {
-        console.log('err?');
-        console.error(err);
+        consola.error(err);
 
         throw new HTTPException(500, {
           message: 'Failed to get subscriptions',
