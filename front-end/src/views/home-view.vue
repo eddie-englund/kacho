@@ -23,7 +23,6 @@ const showSubscriptionForm = shallowRef<boolean>(false);
 
 const handleCloseForm = () => {
   showSubscriptionForm.value = false;
-  isNewSubscription.value = true;
   subscriptionStore.$reset();
 };
 
@@ -143,7 +142,7 @@ const handleEdit = (subscription: SubscriptionSchema) => {
           >
         </stat-modal>
         <stat-modal key="subscription-monthly-split-total">
-          <template #title>Total cost monthly splot</template>
+          <template #title>Total cost monthly split</template>
           <template #value>
             {{ data?.data.monthlySplitTotal.toFixed(2) }}
             {{ data?.data.currency }}

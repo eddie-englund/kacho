@@ -3,7 +3,7 @@ import { z } from 'zod';
 const idSchema = z.string().uuid();
 const serviceSchema = z.string().min(1).max(64);
 const serviceUrlSchema = z.string().url();
-const serviceImgSchema = z.string().url().optional();
+const serviceImgSchema = z.string().url().optional().nullable();
 const titleSchema = z.string().min(1).max(128);
 const costSchema = z.number().positive().min(0.01);
 const billingIntervalSchema = z.string().default('monthly');

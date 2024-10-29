@@ -29,7 +29,7 @@ export const useSubscriptionStore = defineStore('subscription-store', () => {
       validityRef.value = validation.success;
     };
 
-  const isNewSubscription = shallowRef<boolean>(true);
+  const isNewSubscription = shallowRef<boolean>(false);
   const subscriptionId = shallowRef<string>();
 
   const title = shallowRef<string>('');
