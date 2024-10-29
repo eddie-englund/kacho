@@ -11,12 +11,13 @@ import { useFetch } from "@vueuse/core";
 import consola from "consola";
 import { useSubscriptionStore } from "@/stores/subscriptions-store";
 import { BillingInterval } from "subscription-manager/lib/index";
+import { config } from "@/config";
 
 const subscriptionStore = useSubscriptionStore();
 const emit = defineEmits(["close", "submit"]);
 
 const { post, put, isFetching, error } = useFetch(
-  `${import.meta.env.VITE_BASE_URL}/subscription`,
+  `${config.apiBaseUrl}/subscription`,
   {
     immediate: false,
   }

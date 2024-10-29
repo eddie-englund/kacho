@@ -14,6 +14,7 @@ import {
   completeHomeSchema,
 } from "@/util/subscription-util";
 import { useSubscriptionStore } from "@/stores/subscriptions-store";
+import { config } from "@/config";
 
 const subscriptionStore = useSubscriptionStore();
 const query = shallowRef<string>("");
@@ -37,7 +38,7 @@ const searchResults = computed(() => {
 });
 
 const { isFetching, error, execute } = useFetch<completeHomeSchema>(
-  `${import.meta.env.VITE_BASE_URL}/subscriptions`,
+  `${config.apiBaseUrl}/subscriptions`,
   {
     async afterFetch(ctx) {
       const res = await completeHomeSchema.safeParseAsync(JSON.parse(ctx.data));
@@ -49,7 +50,7 @@ const { isFetching, error, execute } = useFetch<completeHomeSchema>(
 );
 
 const { data, execute: fetchTotal } = useFetch(
-  `${import.meta.env.VITE_BASE_URL}/subscriptions/total-cost`
+  `${config.apiBaseUrl}/subscriptions/total-cost`
 ).json<{
   success: boolean;
   data: {
