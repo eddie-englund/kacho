@@ -6,7 +6,7 @@ import { config } from '../../config';
 import { XMLParser } from 'fast-xml-parser';
 import { z } from 'zod';
 import { sum } from 'radash';
-import { BillingInterval } from '../../../../lib/index';
+import { BillingInterval } from 'subscription-manager/lib/index';
 import { consola } from 'consola';
 import { eq } from 'drizzle-orm';
 
@@ -42,8 +42,11 @@ export const getTotalSumOfSubscriptions = (app: Hono) =>
       return c.json({
         success: true,
         data: {
-          currency: config.baseCurrency,
-          total: 0.0,
+          currency: baseCurrency,
+          monthlyTotal: 0.0,
+          monthlySplitTotal: 0.0,
+          yearlyTotal: 0.0,
+          yearlySplitTotal: 0.0,
         },
       });
     }

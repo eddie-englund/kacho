@@ -2,9 +2,9 @@
   "name": "api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "dev": "CORS_ORIGINS=* pnpm ts-node src/app.ts",
+    "dev": "CORS_ORIGINS=* pnpm tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node ./dist/api/src/app.js\"",
     "migrate": "npx drizzle-kit migrate"
   },
   "keywords": [],
@@ -25,6 +25,7 @@
     "@types/pg": "^8.11.10",
     "drizzle-kit": "^0.25.0",
     "ts-node": "^10.9.2",
+    "tsc-watch": "^6.2.0",
     "tsx": "^4.19.1"
   }
 }
