@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 import { watchDebounced } from '@vueuse/core';
 import { CreateSubscriptionSchemas } from '@/util/subscription-util';
 import type { ZodSchema } from 'zod';
-import { BillingInterval } from '../../../lib/index';
+import { BillingInterval } from 'subscription-manager/lib/index';
 
 const {
   titleSchema,
@@ -28,6 +28,9 @@ export const useSubscriptionStore = defineStore('subscription-store', () => {
       const validation = schema.safeParse(value.value);
       validityRef.value = validation.success;
     };
+
+  const isNewSubscription = shallowRef<boolean>(true);
+  const subscriptionId = shallowRef<string>();
 
   const title = shallowRef<string>('');
   const service = shallowRef<string>('');
@@ -128,6 +131,8 @@ export const useSubscriptionStore = defineStore('subscription-store', () => {
     interval.value = BillingInterval.monthly;
     intervalInit.value = true;
     intervalValid.value = true;
+    isNewSubscription.value = false;
+    subscriptionId.value = undefined;
   }
 
   return {
@@ -153,6 +158,8 @@ export const useSubscriptionStore = defineStore('subscription-store', () => {
     interval,
     intervalInit,
     intervalValid,
+    isNewSubscription,
+    subscriptionId,
     $reset,
   };
 });

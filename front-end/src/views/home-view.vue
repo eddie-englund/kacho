@@ -20,7 +20,6 @@ const query = shallowRef<string>("");
 const searchQuery = refDebounced<string>(query, 150);
 const subscriptions = shallowRef<SubscriptionSchema[]>([]);
 const showSubscriptionForm = shallowRef<boolean>(false);
-const isNewSubscription = shallowRef<boolean>(true);
 
 const handleCloseForm = () => {
   showSubscriptionForm.value = false;
@@ -98,7 +97,9 @@ const handleEdit = (subscription: SubscriptionSchema) => {
   subscriptionStore.intervalInit = true;
   subscriptionStore.intervalValid = true;
 
-  isNewSubscription.value = false;
+  subscriptionStore.isNewSubscription = true;
+  subscriptionStore.subscriptionId = subscription.id;
+
   showSubscriptionForm.value = true;
 };
 </script>

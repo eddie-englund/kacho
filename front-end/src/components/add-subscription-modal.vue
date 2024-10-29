@@ -10,11 +10,12 @@ import { CreateSubscriptionSchemas } from "@/util/subscription-util";
 import { useFetch } from "@vueuse/core";
 import consola from "consola";
 import { useSubscriptionStore } from "@/stores/subscriptions-store";
+import { BillingInterval } from "subscription-manager/lib/index";
 
 const subscriptionStore = useSubscriptionStore();
 const emit = defineEmits(["close", "submit"]);
 
-const { post, isFetching, error } = useFetch(
+const { post, put, isFetching, error } = useFetch(
   `${import.meta.env.VITE_BASE_URL}/subscription`,
   {
     immediate: false,
@@ -39,9 +40,15 @@ async function handleSubmit() {
     billingInterval: subscriptionStore.interval,
   });
 
-  await post({ active: true, ...finalForm })
-    .json()
-    .execute();
+  if (subscriptionStore.isNewSubscription) {
+    await put({ active: true, ...finalForm, id: subscriptionStore.subscriptionId })
+      .json()
+      .execute();
+  } else {
+    await post({ active: true, ...finalForm })
+      .json()
+      .execute();
+  }
 
   if (!error.value) return emit("submit");
 }
@@ -178,10 +185,13 @@ async function handleSubmit() {
               required
               class="px-4 py-2 bg-slate-800 rounded placeholder:font-thin placeholder:text-slate-400"
             >
-              <option value="monthly">Monthly</option>
-              <option value="monthly">Bimonthly</option>
-              <option value="weekly">Weekly</option>
-              <option value="weekly">Biweekly</option>
+              <option
+                v-for="option in Object.values(BillingInterval)"
+                :key="option"
+                class="capitalize"
+              >
+                {{ option }}
+              </option>
             </select>
             <p
               class="text-red-400 text-sm transition duration-150 ease-in-out"

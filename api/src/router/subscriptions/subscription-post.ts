@@ -1,12 +1,10 @@
 import { subscriptionsTable } from '../../db/tables/subscriptions-table';
 import { createInsertSchema } from 'drizzle-zod';
 import { db } from '../../db/db';
-import { app } from '../../app';
 import { zValidator } from '@hono/zod-validator';
 import { HTTPException } from 'hono/http-exception';
 import type { Hono } from 'hono';
-import { consola } from 'consola'
-
+import { consola } from 'consola';
 
 const schema = createInsertSchema(subscriptionsTable).omit({ id: true });
 
