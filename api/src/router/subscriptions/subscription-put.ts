@@ -24,7 +24,7 @@ export const putSubscription = (app: Hono) =>
       active,
     } = body;
 
-    await db
+    const [result] = await db
       .update(subscriptionsTable)
       .set({
         service,
@@ -37,6 +37,7 @@ export const putSubscription = (app: Hono) =>
         active,
       })
       .where(eq(subscriptionsTable.id, body.id))
+      .returning({ id: subscriptionsTable.id })
       .catch((err) => {
         consola.error(err);
 
@@ -44,6 +45,12 @@ export const putSubscription = (app: Hono) =>
           message: 'Failed to get subscriptions',
         });
       });
+
+    if (!result) {
+      throw new HTTPException(400, {
+        message: 'No such subscription',
+      });
+    }
 
     return c.json({ success: true });
   });

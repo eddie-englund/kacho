@@ -11,6 +11,7 @@ export const app = new Hono();
 
 app.use(logger());
 app.use(
+  '*',
   cors({
     origin: config.corsOrigins as string[],
   }),

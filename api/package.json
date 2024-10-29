@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "CORS_ORIGINS=* pnpm ts-node src/app.ts",
+    "migrate": "npx drizzle-kit migrate"
   },
   "keywords": [],
   "author": "",
