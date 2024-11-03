@@ -10,7 +10,7 @@ defineProps<{ subscription: homeSchema }>();
     :class="subscription.active ? undefined : 'opacity-30'"
   >
     <img
-      class="w-12 rounded-full"
+      class="w-12 object-cover rounded"
       :class="{ 'w-12 h-12': !subscription.serviceImg }"
       :src="
         subscription.serviceImg ??

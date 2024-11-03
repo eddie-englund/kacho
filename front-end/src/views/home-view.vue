@@ -68,6 +68,7 @@ const handleCompleted = async () => {
   showSubscriptionForm.value = false;
 };
 
+// TODO: Move this somewhere else it's ugly
 const handleEdit = (subscription: SubscriptionSchema) => {
   subscriptionStore.title = subscription.title;
   subscriptionStore.titleValid = true;
@@ -112,66 +113,62 @@ const handleEdit = (subscription: SubscriptionSchema) => {
       @submit="handleCompleted"
       :is-new="false"
     />
-    <div>
-      <div>
-        <label for="searchBar" class="text-slate-400">Filter</label>
-        <div class="flex gap-4 items-center">
-          <input
-            type="text"
-            v-model="query"
-            class="bg-slate-900 rounded p-4 text-white text-2xl placeholder:text-base w-full"
-            placeholder="Filter...."
-          />
-          <k-button :icon="PlusCircle" @click="showSubscriptionForm = true">
-            Add subscription
-          </k-button>
-        </div>
-      </div>
-      <error-modal v-if="error" class="mt-10">
-        Something went wrong, please try again later.
-      </error-modal>
-      <transition-group
-        name="subscriptions-list"
-        tag="div"
-        class="grid grid-cols-3 gap-6 justify-center pt-10"
-      >
-        <stat-modal key="subscription-monthly-total">
-          <template #title>Total monthly subscriptions cost</template>
-          <template #value>
-            {{ data?.data.monthlyTotal.toFixed(2) }}
-            {{ data?.data.currency }}</template
-          >
-        </stat-modal>
-        <stat-modal key="subscription-monthly-split-total">
-          <template #title>Total cost monthly split</template>
-          <template #value>
-            {{ data?.data.monthlySplitTotal.toFixed(2) }}
-            {{ data?.data.currency }}
-          </template>
-        </stat-modal>
-        <stat-modal key="subscription-yearly-total">
-          <template #title>Total yearly subscriptions cost</template>
-          <template #value>
-            {{ data?.data.yearlyTotal.toFixed(2) }}
-            {{ data?.data.currency }}</template
-          >
-        </stat-modal>
-        <stat-modal key="subscription-yearly-split-total">
-          <template #title>Total cost yearly split</template>
-          <template #value>
-            {{ data?.data.yearlySplitTotal.toFixed(2) }}
-            {{ data?.data.currency }}
-          </template>
-        </stat-modal>
-
-        <subscription-card
-          v-for="subscription in searchResults"
-          :subscription
-          :key="subscription.id"
-          @click="handleEdit(subscription)"
-        />
-      </transition-group>
+    <span class="text-slate-400">{{ data?.data.currency }}</span>
+    <div class="grid grid-cols-4 gap-4 mt-2">
+      <stat-modal key="subscription-monthly-total">
+        <template #title>Total monthly cost</template>
+        <template #value>
+          {{ data?.data.monthlyTotal.toFixed(2) }}
+        </template>
+      </stat-modal>
+      <stat-modal key="subscription-monthly-split-total">
+        <template #title>Total cost monthly split</template>
+        <template #value>
+          {{ data?.data.monthlySplitTotal.toFixed(2) }}
+        </template>
+      </stat-modal>
+      <stat-modal key="subscription-yearly-total">
+        <template #title>Total yearly cost</template>
+        <template #value>
+          {{ data?.data.yearlyTotal.toFixed(2) }}
+        </template>
+      </stat-modal>
+      <stat-modal key="subscription-yearly-split-total">
+        <template #title>Total cost yearly split</template>
+        <template #value>
+          {{ data?.data.yearlySplitTotal.toFixed(2) }}
+        </template>
+      </stat-modal>
     </div>
+    <div class="mt-5">
+      <label for="searchBar" class="text-slate-400">Filter</label>
+      <div class="flex gap-4 items-center">
+        <input
+          type="text"
+          v-model="query"
+          class="bg-slate-900 rounded p-4 text-white text-2xl placeholder:text-base w-full"
+          placeholder="Filter...."
+        />
+        <k-button :icon="PlusCircle" @click="showSubscriptionForm = true">
+          Add subscription
+        </k-button>
+      </div>
+    </div>
+    <error-modal v-if="error" class="mt-10">
+      Something went wrong, please try again later.
+    </error-modal>
+    <transition-group
+      name="subscriptions-list"
+      tag="div"
+      class="grid grid-cols-3 gap-6 justify-center pt-10"
+    >
+      <subscription-card
+        v-for="subscription in searchResults"
+        :subscription
+        :key="subscription.id"
+        @click="handleEdit(subscription)"
+      />
+    </transition-group>
   </main>
 </template>
 

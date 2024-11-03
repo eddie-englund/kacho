@@ -35,7 +35,7 @@ export const useSubscriptionStore = defineStore('subscription-store', () => {
   const title = shallowRef<string>('');
   const service = shallowRef<string>('');
   const serviceUrl = shallowRef<string>('');
-  const serviceImgUrl = shallowRef<string>();
+  const serviceImgUrl = shallowRef<string | undefined | null>();
   const cost = shallowRef<number>(1);
   const currency = shallowRef<string>('SEK');
   const interval = shallowRef<string>('monthly');
