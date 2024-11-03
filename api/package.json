@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "dev": "CORS_ORIGINS=* pnpm tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node ./dist/api/src/app.js\"",
+    "dev": "cross-env CORS_ORIGINS=* pnpm tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node ./dist/api/src/app.js\"",
     "migrate": "npx drizzle-kit migrate"
   },
   "keywords": [],

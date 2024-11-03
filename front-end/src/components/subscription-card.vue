@@ -11,6 +11,7 @@ defineProps<{ subscription: homeSchema }>();
   >
     <img
       class="w-12 rounded-full"
+      :class="{ 'w-12 h-12': !subscription.serviceImg }"
       :src="
         subscription.serviceImg ??
         'https://unsplash.com/photos/0Sou_P3wuak/download?ixid=M3wxMjA3fDB8MXx0b3BpY3x8Q0R3dXdYSkFiRXd8fHx8fDJ8fDE3Mjg3NjM4NDJ8&force=true&w=320'

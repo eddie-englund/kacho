@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "run:dev": "pnpm --filter api dev & pnpm --filter front-end dev",
+    "run:dev": "concurrently \"pnpm --filter api dev\"  \"pnpm --filter front-end dev\"",
     "run:migrate": "pnpm --filter api migrate"
   },
   "keywords": [],
@@ -17,6 +17,8 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.3",
+    "concurrently": "^9.0.1",
+    "cross-env": "^7.0.3",
     "type-fest": "^4.26.1",
     "typescript": "^5.6.3"
   }
