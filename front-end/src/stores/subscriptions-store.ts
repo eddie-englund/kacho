@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 import { watchDebounced } from '@vueuse/core';
 import { CreateSubscriptionSchemas } from '@/util/subscription-util';
 import type { ZodSchema } from 'zod';
-import { BillingInterval } from 'subscription-manager/lib/index';
+import { BillingInterval } from 'lib';
 
 const {
   titleSchema,

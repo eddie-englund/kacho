@@ -2,7 +2,6 @@
   "name": "api",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
   "scripts": {
     "dev": "cross-env CORS_ORIGINS=* pnpm tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node ./dist/api/src/app.js\"",
     "migrate": "npx drizzle-kit migrate"
@@ -19,7 +18,7 @@
     "fast-xml-parser": "^4.5.0",
     "hono": "4.6.3",
     "pg": "^8.13.0",
-    "subscription-manager": "workspace:*"
+    "lib": "workspace:*"
   },
   "devDependencies": {
     "@types/pg": "^8.11.10",
