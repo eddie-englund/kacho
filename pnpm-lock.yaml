@@ -57,12 +57,12 @@ importers:
       hono:
         specifier: 4.6.3
         version: 4.6.3
+      lib:
+        specifier: workspace:*
+        version: link:../lib
       pg:
         specifier: ^8.13.0
         version: 8.13.0
-      subscription-manager:
-        specifier: workspace:*
-        version: link:..
     devDependencies:
       '@types/pg':
         specifier: ^8.11.10
@@ -91,15 +91,15 @@ importers:
       fuzzysort:
         specifier: ^3.1.0
         version: 3.1.0
+      lib:
+        specifier: workspace:*
+        version: link:../lib
       lucide-vue-next:
         specifier: ^0.452.0
         version: 0.452.0(vue@3.5.12(typescript@5.5.4))
       pinia:
         specifier: ^2.2.4
         version: 2.2.4(typescript@5.5.4)(vue@3.5.12(typescript@5.5.4))
-      subscription-manager:
-        specifier: workspace:*
-        version: link:..
       vue:
         specifier: ^3.5.11
         version: 3.5.12(typescript@5.5.4)
@@ -143,6 +143,8 @@ importers:
       vue-tsc:
         specifier: ^2.1.6
         version: 2.1.6(typescript@5.5.4)
+
+  lib: {}
 
 packages:
 

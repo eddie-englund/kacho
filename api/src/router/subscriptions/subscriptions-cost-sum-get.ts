@@ -6,7 +6,7 @@ import { config } from '../../config';
 import { XMLParser } from 'fast-xml-parser';
 import { z } from 'zod';
 import { sum } from 'radash';
-import { BillingInterval } from 'subscription-manager/lib/index';
+import { BillingInterval } from 'lib';
 import { consola } from 'consola';
 import { eq } from 'drizzle-orm';
 

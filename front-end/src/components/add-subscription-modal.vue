@@ -10,7 +10,7 @@ import { CreateSubscriptionSchemas } from "@/util/subscription-util";
 import { useFetch } from "@vueuse/core";
 import consola from "consola";
 import { useSubscriptionStore } from "@/stores/subscriptions-store";
-import { BillingInterval } from "subscription-manager/lib/index";
+import { BillingInterval } from "lib";
 import { config } from "@/config";
 
 const subscriptionStore = useSubscriptionStore();

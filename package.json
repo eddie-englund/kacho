@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "run:dev": "concurrently \"pnpm --filter api dev\"  \"pnpm --filter front-end dev\"",
+    "run:dev": "pnpm --filter lib build && concurrently \"pnpm --filter api dev\"  \"pnpm --filter front-end dev\"",
     "run:migrate": "pnpm --filter api migrate"
   },
   "keywords": [],
